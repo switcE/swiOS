@@ -86,15 +86,37 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
     EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
     UINTN MapKey, DescriptorSize;
     UINT32 DescriptorVersion;
+
+    // Get the memory map size
     Status = SystemTable->BootServices->GetMemoryMap(&MemoryMapSize, MemoryMap, &MapKey, &DescriptorSize, &DescriptorVersion);
-    if (EFI_ERROR(Status)) {
-        Print(L"Error: Unable to get memory map!\n");
+    if (Status != EFI_BUFFER_TOO_SMALL) {
+        Print(L"Error: Unable to get memory map size!\n");
         SystemTable->BootServices->FreePool(KernelBuffer);
         return Status;
     }
+
+    // Allocate memory for the memory map
+    Status = SystemTable->BootServices->AllocatePool(EfiLoaderData, MemoryMapSize, (void **)&MemoryMap);
+    if (EFI_ERROR(Status)) {
+        Print(L"Error: Memory allocation for memory map failed!\n");
+        SystemTable->BootServices->FreePool(KernelBuffer);
+        return Status;
+    }
+
+    // Get the memory map
+    Status = SystemTable->BootServices->GetMemoryMap(&MemoryMapSize, MemoryMap, &MapKey, &DescriptorSize, &DescriptorVersion);
+    if (EFI_ERROR(Status)) {
+        Print(L"Error: Unable to get memory map!\n");
+        SystemTable->BootServices->FreePool(MemoryMap);
+        SystemTable->BootServices->FreePool(KernelBuffer);
+        return Status;
+    }
+
+    // Exit boot services
     Status = SystemTable->BootServices->ExitBootServices(ImageHandle, MapKey);
     if (EFI_ERROR(Status)) {
         Print(L"Error: Failed to exit boot services!\n");
+        SystemTable->BootServices->FreePool(MemoryMap);
         SystemTable->BootServices->FreePool(KernelBuffer);
         return Status;
     }
@@ -104,4 +126,4 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
     KernelEntry();
 
     return EFI_SUCCESS;
-}
+}       

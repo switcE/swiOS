@@ -1,22 +1,48 @@
 #include "memory.h"
-#include "lib.h"
 
-// A simple bump allocator for kernel memory management
-static unsigned long heap_start = 0x01000000;  // Example start address
-static unsigned long heap_end = 0x01000000;
-static unsigned long heap_max = 0x02000000;      // Example maximum
-
-void init_memory() {
-    heap_end = heap_start;
-    print_string("Memory management initialized.\n");
+void* memset(void* dest, int value, size_t len) {
+    unsigned char* ptr = dest;
+    while (len-- > 0) {
+        *ptr++ = value;
+    }
+    return dest;
 }
 
-void *kmalloc(unsigned long size) {
-    void *addr = (void *)heap_end;
-    heap_end += size;
-    if (heap_end >= heap_max) {
-        print_string("kmalloc: Out of memory!\n");
-        return 0;
+void* memcpy(void* dest, const void* src, size_t len) {
+    const unsigned char* src_ptr = src;
+    unsigned char* dest_ptr = dest;
+    while (len-- > 0) {
+        *dest_ptr++ = *src_ptr++;
     }
-    return addr;
+    return dest;
+}
+
+void* memmove(void* dest, const void* src, size_t len) {
+    const unsigned char* src_ptr = src;
+    unsigned char* dest_ptr = dest;
+    if (dest_ptr < src_ptr) {
+        while (len-- > 0) {
+            *dest_ptr++ = *src_ptr++;
+        }
+    } else {
+        src_ptr += len;
+        dest_ptr += len;
+        while (len-- > 0) {
+            *--dest_ptr = *--src_ptr;
+        }
+    }
+    return dest;
+}
+
+int memcmp(const void* ptr1, const void* ptr2, size_t len) {
+    const unsigned char* p1 = ptr1;
+    const unsigned char* p2 = ptr2;
+    while (len-- > 0) {
+        if (*p1 != *p2) {
+            return *p1 - *p2;
+        }
+        p1++;
+        p2++;
+    }
+    return 0;
 }

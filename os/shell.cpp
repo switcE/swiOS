@@ -1,20 +1,26 @@
-#include <iostream>
-#include <string>
 #include "shell.h"
+#include "video.h"
+#include "keyboard.h"
 
-void start_shell() {
-    std::cout << "Shell started. Type 'help' for commands." << std::endl;
-    while(true) {
-        std::cout << "> ";
-        std::string command;
-        std::getline(std::cin, command);
-        if(command == "help") {
-            std::cout << "Available commands: help, exit" << std::endl;
-        } else if(command == "exit") {
-            std::cout << "Exiting shell." << std::endl;
-            break;
-        } else {
-            std::cout << "Unknown command: " << command << std::endl;
+void shell_init() {
+    clear_screen();
+    print("Welcome to swiOS Shell\n");
+}
+
+void shell_run() {
+    char buffer[256];
+    while (1) {
+        print("> ");
+        int index = 0;
+        char c;
+        while ((c = keyboard_read_scan_code()) != '\n') {
+            if (c != 0) {
+                buffer[index++] = c;
+                print_char(c, -1, -1, WHITE_ON_BLACK);
+            }
         }
+        buffer[index] = '\0';
+        print("\n");
+        // Process the command in buffer (dummy implementation)
     }
 }

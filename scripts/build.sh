@@ -1,18 +1,22 @@
 #!/bin/bash
-# Build Bootloader
-echo "Building Bootloader..."
-cd ../bootloader
-make clean && make
-cd ../kernel
 
-# Build Kernel
-echo "Building Kernel..."
-make clean && make
-cd ../os
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Build OS
+# Build the bootloader
+echo "Building bootloader..."
+make -C bootloader
+
+# Build the kernel
+echo "Building kernel..."
+make -C kernel
+
+# Build the OS
 echo "Building OS..."
-make clean && make
-cd ..
+make -C os
 
-echo "Build completed."
+# Combine bootloader and kernel into a single binary
+echo "Combining bootloader and kernel..."
+cat bootloader/bootloader.bin kernel/kernel.bin > os-image.bin
+
+echo "Build complete. OS image is os-image.bin"

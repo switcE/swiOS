@@ -1,8 +1,9 @@
-/* OS linker script stub */
-ENTRY(main)
-SECTIONS {
-  . = 0x200000;
-  .text : { *(.text*) }
-  .data : { *(.data*) }
-  .bss  : { *(.bss*) }
+ENTRY(kernel_main)
+
+SECTIONS
+{
+    . = 0x100000;
+    .text : { *(.text) }
+    .data : { *(.data) }
+    .bss : { *(.bss) }
 }

@@ -1,47 +1,28 @@
 #include "interrupts.h"
-#include "video.h"
+#include "memory.h"
+#include "keyboard.h"
 
-struct idt_entry {
-    unsigned short base_low;
-    unsigned short sel;
-    unsigned char always0;
-    unsigned char flags;
-    unsigned short base_high;
-} __attribute__((packed));
+extern void idt_load(uint32_t);
 
-struct idt_ptr {
-    unsigned short limit;
-    unsigned int base;
-} __attribute__((packed));
+static idt_entry_t idt[IDT_SIZE];
+static idt_ptr_t idt_ptr;
 
-#define IDT_SIZE 256
-struct idt_entry idt[IDT_SIZE];
-struct idt_ptr idtp;
-
-// Declaration of assembly routine to load the IDT
-extern void idt_load(unsigned int);
-
-// Default interrupt handler
-void default_interrupt_handler() {
-    print_string("Interrupt occurred!\n");
+void idt_set_gate(int n, uint32_t handler) {
+    idt[n].offset_low = handler & 0xFFFF;
+    idt[n].selector = 0x08; // Kernel code segment
+    idt[n].zero = 0;
+    idt[n].type_attr = 0x8E; // Interrupt gate
+    idt[n].offset_high = (handler >> 16) & 0xFFFF;
 }
 
-void set_idt_entry(int i, unsigned int base, unsigned short sel, unsigned char flags) {
-    idt[i].base_low = base & 0xFFFF;
-    idt[i].sel = sel;
-    idt[i].always0 = 0;
-    idt[i].flags = flags;
-    idt[i].base_high = (base >> 16) & 0xFFFF;
-}
+void idt_install() {
+    idt_ptr.limit = sizeof(idt) - 1;
+    idt_ptr.base = (uint32_t)&idt;
 
-void init_interrupts() {
-    idtp.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
-    idtp.base = (unsigned int)&idt;
+    memset(&idt, 0, sizeof(idt));
 
-    for (int i = 0; i < IDT_SIZE; i++) {
-        set_idt_entry(i, (unsigned int)default_interrupt_handler, 0x08, 0x8E);
-    }
-    
-    idt_load((unsigned int)&idtp);
-    print_string("Interrupts initialized.\n");
+    // Set up the IDT entries here (e.g., for keyboard interrupt)
+    idt_set_gate(33, (uint32_t)keyboard_handler); // IRQ1 is mapped to IDT entry 33
+
+    idt_load((uint32_t)&idt_ptr);
 }

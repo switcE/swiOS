@@ -1,10 +1,22 @@
 #ifndef FS_H
 #define FS_H
 
-typedef struct fat32_directory_entry fat32_directory_entry;
+#include <stdint.h>
 
-void init_fs();
-fat32_directory_entry *read_directory_entry(unsigned int cluster, unsigned int index);
-void read_file_data(unsigned int cluster, unsigned int offset, unsigned char *buffer, unsigned int size);
+#define MAX_FILES 128
+#define FILE_DATA_SIZE 1024
 
-#endif
+typedef struct {
+    char name[32];
+    uint32_t size;
+    uint32_t start_block;
+    uint8_t data[FILE_DATA_SIZE];
+} file_t;
+
+void fs_init();
+file_t* fs_open(const char* filename);
+void fs_close(file_t* file);
+int fs_read(file_t* file, void* buffer, uint32_t size);
+file_t* fs_create(const char* filename, const uint8_t* data, uint32_t size);
+
+#endif // FS_H

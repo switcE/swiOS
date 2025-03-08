@@ -1,6 +1,7 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-void start_shell();
+void shell_init();
+void shell_run();
 
-#endif
+#endif // SHELL_H

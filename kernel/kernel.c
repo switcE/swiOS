@@ -1,21 +1,24 @@
 #include "kernel.h"
 #include "video.h"
-#include "memory.h"
-#include "interrupts.h"
-#include "fs.h"
 #include "keyboard.h"
+#include "interrupts.h"
 
 void kernel_main() {
-    init_video();
-    print_string("Welcome to My OS Kernel!\n");
+    clear_screen();
+    print("Welcome to swiOS Kernel\n");
 
-    init_memory();
-    init_interrupts();
-    init_fs();
-    init_keyboard();
+    idt_install();
+    keyboard_init();
 
-    // Main loop (placeholder for task scheduling and system calls)
     while (1) {
-        // You could poll the keyboard or handle other tasks here.
+        // Kernel main loop
+    }
+}
+
+void kernel_panic(const char* message) {
+    print("Kernel Panic: ");
+    print(message);
+    while (1) {
+        // Halt the system
     }
 }

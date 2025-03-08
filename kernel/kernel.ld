@@ -1,8 +1,9 @@
-/* Kernel linker script stub */
 ENTRY(kernel_main)
-SECTIONS {
-  . = 0x100000;
-  .text : { *(.text*) }
-  .data : { *(.data*) }
-  .bss  : { *(.bss*) }
+
+SECTIONS
+{
+    . = 0x100000;
+    .text : { *(.text) }
+    .data : { *(.data) }
+    .bss : { *(.bss) }
 }

@@ -1,6 +1,8 @@
-    #ifndef BOOTLOADER_H
-    #define BOOTLOADER_H
+#ifndef BOOTLOADER_H
+#define BOOTLOADER_H
 
-    // Declarations for bootloader functions (if needed)
+#include <stdint.h>
 
-    #endif
+void bootloader_main();
+
+#endif // BOOTLOADER_H
