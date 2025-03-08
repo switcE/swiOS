@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 MAKEFLAGS += -rR
 .SUFFIXES:
 
@@ -39,3 +40,6 @@ clean:
 
 distclean: clean
 	rm -rf nyu-efi
+=======
+# WIP
+>>>>>>> Stashed changes

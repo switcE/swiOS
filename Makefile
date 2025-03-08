@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 .PHONY: all bootloader kernel os clean distclean
 
 all: bootloader kernel os
@@ -20,3 +21,6 @@ distclean:
 	$(MAKE) -C bootloader distclean
 	$(MAKE) -C kernel distclean
 	$(MAKE) -C os distclean
+=======
+# WIP
+>>>>>>> Stashed changes

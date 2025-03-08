@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 CC := x86_64-elf-gcc
 CFLAGS := -ffreestanding -nostdlib -Wall -Wextra -std=gnu11
 LDFLAGS := -T kernel.ld
@@ -16,3 +17,6 @@ clean:
 	rm -f *.o *.bin
 
 distclean: clean
+=======
+# WIP
+>>>>>>> Stashed changes
