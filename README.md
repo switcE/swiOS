@@ -13,13 +13,11 @@ swiOS is a simple operating system for the x86_64 architecture using UEFI. The b
 - **Makefile**: Root Makefile to build all components.
 
 ## Building
-Run the build script from the \`/scripts\` directory:
-\`\`\`bash
-./build.sh
-\`\`\`
+Run the build script from the `/scripts\` directory `./build.sh`
+
 
 ## Running in QEMU
 Run the OS:
-\`\`\`bash
+```bash
 ./run_qemu.sh
-\`\`\`
+```
