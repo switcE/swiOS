@@ -1,6 +1,7 @@
 #include "shell.h"
 #include "video.h"
 #include "keyboard.h"
+#include "string.h"
 
 void shell_init() {
     clear_screen();
@@ -21,6 +22,21 @@ void shell_run() {
         }
         buffer[index] = '\0';
         print("\n");
-        // Process the command in buffer (dummy implementation)
+        process_command(buffer);
+    }
+}
+
+void process_command(const char* command) {
+    if (strcmp(command, "help") == 0) {
+        print("Available commands:\n");
+        print("help - Show this help message\n");
+        print("clear - Clear the screen\n");
+        // Add more commands here
+    } else if (strcmp(command, "clear") == 0) {
+        clear_screen();
+    } else {
+        print("Unknown command: ");
+        print(command);
+        print("\n");
     }
 }
